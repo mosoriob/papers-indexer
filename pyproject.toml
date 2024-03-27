@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "search-bulk"
+version = "0.1.0"
+description = ""
+authors = ["Maximiliano Osorio <maxiosorio@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+requests = "^2.31.0"
+urllib3 = "^2.2.1"
+neo4j = "^5.18.0"
+langchain = "^0.1.13"
+langchain-community = "^0.0.29"
+python-dotenv = "^1.0.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
