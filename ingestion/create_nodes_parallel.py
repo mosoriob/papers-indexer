@@ -1,5 +1,6 @@
 import os
 from dotenv import load_dotenv
+from neo4j import AsyncDriver
 
 from ingestion.create_nodes_seq import (
     create_publication_venue_relation_paper,
@@ -24,19 +25,19 @@ if not NEO4J_URI:
     raise ValueError("Missing NEO4J_URI in environment")
 
 
-async def create_node_tx(tx, paper: Paper):
+async def create_node_tx(tx, paper: Paper) -> None:
     query = create_paper_query(paper)
     result = await tx.run(query, paper=paper.to_dict())
     node = await result.single()
 
 
-async def create_author_node_tx(tx, author: Author):
+async def create_author_node_tx(tx, author: Author) -> None:
     query = create_author_query()
     result = await tx.run(query, author=author)
     node = await result.single()
 
 
-async def create_publication_venue_node_tx(tx, venue: Venue):
+async def create_publication_venue_node_tx(tx, venue: Venue) -> None:
     query = create_publication_venue_query(venue)
     result = await tx.run(query, venue=venue)
     node = await result.single()
@@ -50,7 +51,7 @@ async def create_publication_venue_relation_paper_node_tx(
     node = await result.single()
 
 
-async def create_paper_node(driver, paper: Paper):
+async def create_paper_node(driver: AsyncDriver, paper: Paper):
     async with driver.session(database=NEO4J_DATABASE) as session:
         authors = paper.authors
         await session.write_transaction(create_node_tx, paper)
@@ -63,14 +64,10 @@ async def create_paper_node(driver, paper: Paper):
             )
 
             if not isinstance(paper.publicationVenue, str) and isinstance(venue, Venue):
-                queryPublicationVenue = create_publication_venue_query(venue)
                 await session.write_transaction(
                     create_publication_venue_node_tx, venue=venue
                 )
 
-                queryPublicationVenueRelationPaper = (
-                    create_publication_venue_relation_paper(venue, paper)
-                )
                 await session.write_transaction(
                     create_publication_venue_relation_paper_node_tx,
                     venue=venue,
