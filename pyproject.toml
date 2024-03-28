@@ -13,6 +13,7 @@ neo4j = "^5.18.0"
 langchain = "^0.1.13"
 langchain-community = "^0.0.29"
 python-dotenv = "^1.0.1"
+asyncio = "^3.4.3"
 
 
 [build-system]
