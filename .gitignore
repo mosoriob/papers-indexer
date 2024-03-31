@@ -10,7 +10,8 @@ search_bulk/papers.bk
 .LSOverride
 
 # Icon must end with two \r
-Icon
+Icon
+
 
 # Thumbnails
 ._*
@@ -205,3 +206,4 @@ pyrightconfig.json
 
 # End of https://www.toptal.com/developers/gitignore/api/osx,python
 
+search_bulk/papers.zip

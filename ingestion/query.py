@@ -20,6 +20,7 @@ def create_paper_query(paper: Paper):
                 paper.year = $paper.year,
                 paper.referenceCount = $paper.referenceCount,
                 paper.citationCount = $paper.citationCount,
+                paper.abstract = $paper.abstract,
                 paper.influentialCitationCount = $paper.influentialCitationCount,
                 paper.isOpenAccess = $paper.isOpenAccess,
                 paper.openAccessPdfUrl = $paper.openAccessPdf.url,
@@ -27,6 +28,7 @@ def create_paper_query(paper: Paper):
                 paper.fieldsOfStudy = $paper.fieldsOfStudy,
                 paper.publicationTypes = $paper.publicationTypes,
                 paper.publicationDate = $paper.publicationDate
+
         RETURN paper.paperId as id
     """
 

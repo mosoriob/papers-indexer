@@ -54,26 +54,36 @@ async def create_publication_venue_relation_paper_node_tx(
 async def create_paper_node(driver: AsyncDriver, paper: Paper):
     async with driver.session(database=NEO4J_DATABASE) as session:
         authors = paper.authors
-        await session.write_transaction(create_node_tx, paper)
+        try:
+            await session.write_transaction(create_node_tx, paper)
 
-        if paper.publicationVenue is not None:
-            venue = (
-                paper.publicationVenue
-                if isinstance(paper.publicationVenue, dict)
-                else paper.publicationVenue
-            )
-
-            if not isinstance(paper.publicationVenue, str) and isinstance(venue, Venue):
-                await session.write_transaction(
-                    create_publication_venue_node_tx, venue=venue
+            if paper.publicationVenue is not None:
+                venue = (
+                    paper.publicationVenue
+                    if isinstance(paper.publicationVenue, dict)
+                    else paper.publicationVenue
                 )
 
-                await session.write_transaction(
-                    create_publication_venue_relation_paper_node_tx,
-                    venue=venue,
-                    paper=paper,
-                )
+                if not isinstance(paper.publicationVenue, str) and isinstance(
+                    venue, Venue
+                ):
+                    await session.write_transaction(
+                        create_publication_venue_node_tx, venue=venue
+                    )
 
-        for author in authors:
-            if author and author["authorId"] is not None:
-                await session.write_transaction(create_author_node_tx, author=author)
+                    await session.write_transaction(
+                        create_publication_venue_relation_paper_node_tx,
+                        venue=venue,
+                        paper=paper,
+                    )
+
+            for author in authors:
+                if author and author["authorId"] is not None:
+                    await session.write_transaction(
+                        create_author_node_tx, author=author
+                    )
+        except Exception as e:
+            print(f"{paper.paperId}: {e}")
+            session.cancel()
+        finally:
+            await session.close()

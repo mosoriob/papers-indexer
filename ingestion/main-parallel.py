@@ -43,7 +43,7 @@ async def create_nodes(data: List[dict]):  # type: ignore
         NEO4J_URI, auth=(NEO4J_USERNAME, NEO4J_PASSWORD)
     ) as driver:
         counter = 0
-        batchSize = 500
+        batchSize = 24
         length = len(data) // batchSize + 1
         for batch in batched(data, batchSize):
             counter += 1
